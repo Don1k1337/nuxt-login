@@ -1,39 +1,36 @@
 <template>
-  <v-container fluid class="login-container">
+  <v-container fluid class="login-form-container">
     <v-row class="fill-height">
       <v-col cols="12" md="6" class="login-form-col fill-height">
         <div class="login-form">
           <div class="login-form-logo">
             <v-img :src="require('~/static/logo.svg')" width="48" height="36" />
           </div>
-          <div class="login-form-text">
+          <div class="login-form-title">
             <h1>Log in to your account</h1>
           </div>
-          <v-form>
+          <v-form @submit.prevent="submitForm">
             <v-text-field
               v-model="email"
               placeholder="name@hoteldomain.com"
-              :error="!validEmail"
-              :error-messages="validEmail ? [] : ['Please check email address']"
-              :append-icon="validEmail ? undefined : 'mdi-alert-circle-outline'"
+              :error="!validEmail && formSubmitted"
+              :error-messages="validEmail || !formSubmitted ? [] : ['Please check email address']"
+              :append-icon="validEmail || !formSubmitted ? undefined : 'mdi-alert-circle-outline'"
               outlined
               :class="{
-                'error-field': !validEmail,
                 'v-text-field--outlined': true,
-                'validation-error': !validEmail,
-              }"
-            ></v-text-field>
+                'validation-error': !validEmail && formSubmitted,
+              }" />
             <v-text-field
               v-model="password"
               placeholder="••••••••"
-              :error="!validPassword"
-              :error-messages="validPassword ? [] : ['Please fill in your password']"
-              :append-icon="validPassword ? undefined : 'mdi-alert-circle-outline'"
+              :error="!validPassword && formSubmitted"
+              :error-messages="validPassword || !formSubmitted ? [] : ['Please fill in your password']"
+              :append-icon="validPassword || !formSubmitted ? undefined : 'mdi-alert-circle-outline'"
               outlined
               :class="{
-                'error-field': !validPassword,
                 'v-text-field--outlined': true,
-                'validation-error': !validPassword,
+                'validation-error': !validPassword && formSubmitted,
               }"
             ></v-text-field>
             <div style="display: flex; align-items: center;">
@@ -42,9 +39,12 @@
               </v-checkbox>
               <nuxt-link style="margin-top: 1.2rem" class="forgot-password-link" to="#">Forgot password?</nuxt-link>
             </div>
-            <v-btn class="btn-sign" color="#6941C6" width="100%" type="submit" @click.prevent="signin">Sign in</v-btn>
+            <v-btn class="btn-sign" color="#6941C6" width="100%" type="submit" @submit.prevent="submitForm">Sign in</v-btn>
           </v-form>
-
+          <div class="login-form-trouble">
+            <span class="login-trouble">Can’t log in to your account?</span>
+            <nuxt-link to="#">Ask support</nuxt-link>
+          </div>
         </div>
       </v-col>
       <v-col cols="12" md="6" class="login-image-col fill-height">
@@ -61,39 +61,52 @@
 
 <script>
 export default {
-  name: "LoginForm",
   data() {
     return {
       email: '',
       password: '',
       remember: false,
-
+      formSubmitted: false
+    }
+  },
+  methods: {
+    submitForm() {
+      this.formSubmitted = true
+      if (this.validEmail && this.validPassword) {
+        // just for checks
+        alert('Submitted')
+      } else {
+        // just for checks
+        alert('Pls, check validation errors')
+      }
     }
   },
   computed: {
     validEmail() {
-      return this.email === '' || this.email.includes('@')
+      return this.email !== '' || this.email.includes('@')
     },
     validPassword() {
-      return this.password === '' || this.password.length >= 8
+      return this.password !== '' || this.password.length >= 8
     }
-  },
+  }
 }
 </script>
+
 
 <style scoped>
 
 * {
  font-family: Inter, sans-serif;
+ color: #475467;
 }
+
 .fill-height {
   height: 100vh;
 }
 
-.login-container {
+.login-form-container {
   padding: 0;
 }
-
 
 .login-form-col {
   background-color: #f1f1f1;
@@ -107,7 +120,7 @@ export default {
   width: 100%;
 }
 @media (max-width: 820px) {
-  .login-image {
+  .login-image-col {
     display: none;
   }
 }
@@ -124,9 +137,15 @@ export default {
   margin: 15rem auto 0;
 }
 
-.login-form-text {
+.login-form-title {
   margin-top: 1.5rem;
   margin-bottom: 2rem;
+  text-align: center;
+  color: #101828;
+}
+
+.login-form-trouble {
+  margin-top: 1.5rem;
   text-align: center;
 }
 
