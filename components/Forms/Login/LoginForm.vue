@@ -10,6 +10,7 @@
             <h1>Log in to your account</h1>
           </div>
           <v-form @submit.prevent="submitForm">
+            <v-subheader class="login-form-subheader">Email</v-subheader>
             <v-text-field
               v-model="email"
               placeholder="name@hoteldomain.com"
@@ -21,8 +22,10 @@
                 'v-text-field--outlined': true,
                 'validation-error': !validEmail && formSubmitted,
               }" />
+            <v-subheader class="login-form-subheader">Password</v-subheader>
             <v-text-field
               v-model="password"
+              type="password"
               placeholder="••••••••"
               :error="!validPassword && formSubmitted"
               :error-messages="validPassword || !formSubmitted ? [] : ['Please fill in your password']"
@@ -33,11 +36,10 @@
                 'validation-error': !validPassword && formSubmitted,
               }"
             ></v-text-field>
+
             <div style="display: flex; align-items: center;">
-              <v-checkbox color="#7F56D9" v-model="remember" label="Remember me" hide-details>
-                Remember me
-              </v-checkbox>
-              <nuxt-link style="margin-top: 1.2rem" class="forgot-password-link" to="#">Forgot password?</nuxt-link>
+              <v-checkbox class="login-form-remember" color="#7F56D9" v-model="remember" label="Remember me" hide-details></v-checkbox>
+              <nuxt-link class="forgot-password-link" to="#">Forgot password?</nuxt-link>
             </div>
             <v-btn class="btn-sign" color="#6941C6" width="100%" type="submit" @submit.prevent="submitForm">Sign in</v-btn>
           </v-form>
@@ -75,18 +77,16 @@ export default {
       if (this.validEmail && this.validPassword) {
         // just for checks
         alert('Submitted')
-      } else {
-        // just for checks
-        alert('Pls, check validation errors')
       }
     }
   },
   computed: {
     validEmail() {
-      return this.email !== '' || this.email.includes('@')
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return this.email !== '' && emailRegex.test(this.email);
     },
     validPassword() {
-      return this.password !== '' || this.password.length >= 8
+      return this.password !== '' && this.password.length >= 8
     }
   }
 }
@@ -98,14 +98,17 @@ export default {
 * {
  font-family: Inter, sans-serif;
  color: #475467;
+ margin: 0;
+ padding: 0;
 }
 
-.fill-height {
-  height: 100vh;
+html, body {
+  height: 100%;
 }
 
 .login-form-container {
   padding: 0;
+  height: 100vh;
 }
 
 .login-form-col {
@@ -117,7 +120,7 @@ export default {
 }
 
 .login-image {
-  width: 100%;
+  width: auto;
 }
 @media (max-width: 820px) {
   .login-image-col {
@@ -132,16 +135,44 @@ export default {
   flex-direction: column;
   justify-content: center;
 }
-
+@media (min-width: 1150px) {
+  .login-form {
+    margin-top: 2rem;
+  }
+}
+@media (min-width: 1400px) {
+  .login-form {
+    margin-top: 5rem;
+  }
+}
+@media (max-width: 360px) {
+  .login-form {
+    width: 330px;
+  }
+}
 .login-form-logo {
   margin: 15rem auto 0;
 }
-
+@media (max-width: 814px) {
+  .login-form-logo {
+    margin: 8rem auto 0;
+  }
+}
+@media (max-width: 420px) {
+  .login-form-logo {
+    margin: 10rem auto 0;
+  }
+}
 .login-form-title {
   margin-top: 1.5rem;
   margin-bottom: 2rem;
   text-align: center;
   color: #101828;
+}
+@media (max-width: 720px) {
+  .login-form-title h1{
+    font-size: 24px;
+  }
 }
 
 .login-form-trouble {
@@ -152,11 +183,24 @@ export default {
 .forgot-password-link {
   display: inline-block;
   margin-left: auto;
+  font-size: 14px;
+}
+
+.login-form-remember label {
+  font-size: 14px;
+}
+.login-form-trouble {
+  font-size: 14px;
 }
 .btn-sign {
   color: #f1f1f1;
   margin-top: 1.5rem;
+  font-family: 'Inter',sans-serif;
+  font-style: normal;
   font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  text-transform: capitalize;
 }
 
 a {
@@ -167,6 +211,17 @@ a {
 
 .validation-error >>> fieldset {
   border-color: #FDA29B;
+}
+.login-form-subheader.v-subheader {
+  padding: 0;
+  color: #344054;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 20px;
+}
+.v-input--checkbox::v-deep .v-label, .v-icon {
+  font-size: 14px;
+  color: #344054;
 }
 
 </style>
